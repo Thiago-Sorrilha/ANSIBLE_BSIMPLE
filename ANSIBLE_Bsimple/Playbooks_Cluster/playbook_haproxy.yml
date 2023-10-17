@@ -1,0 +1,20 @@
+---
+- name: Install HAProxy on Ubuntu
+  hosts: control_plane 
+  become: yes  # Indica que as tarefas devem ser executadas com privilégios de superusuário
+  gather_facts: no
+
+  tasks:
+  - name: 1) Copiar yamls deploy HAproxy
+    ansible.builtin.copy:
+      src: copia/haproxy/
+      dest: /home/vagrant/haproxy/
+      owner: vagrant
+      mode: '0644'    
+  
+  - name: 2) Efetuar deploy HAproxy
+    shell: sudo kubectl apply -f ./haproxy/deploy_proxy.yaml
+
+  #- name: 3) Alterar o tipo do serviço para LoadBalancer
+  #  command: "sudo kubectl patch svc haproxy-kubernetes-ingress -n haproxy-sys -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'"
+  

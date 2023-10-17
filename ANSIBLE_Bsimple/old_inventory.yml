@@ -1,0 +1,31 @@
+[control_plane]
+#tstmaster ansible_host=192.168.56.180 hostname=tst-master
+control-plane ansible_host=192.168.56.101 hostname=control-plane
+
+
+[nodes]
+node1 ansible_host=192.168.56.102 hostname=node1
+#node2 ansible_host=192.168.56.103 hostname=node2
+#node3 ansible_host=192.168.56.104 hostname=node3
+
+[redis]
+#redismaster ansible_host=192.168.56.110 hostname=redismaster
+
+
+[mirth]
+mirth1 ansible_host=192.168.56.102 hostname=mrth1
+#[aws_control]
+#test_control_plane ansible_host=15.236.207.231 ansible_user=ubuntu
+
+
+#Config de acesso vagrant (alterar para usuario e senha criados no host)
+[all:vars]
+ansible_user=vagrant
+ansible_password=vagrant
+
+#[nodes:vars]
+#ansible_user=vagrant
+#ansible_password=vagrant
+
+
+

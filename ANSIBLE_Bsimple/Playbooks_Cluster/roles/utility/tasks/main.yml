@@ -1,0 +1,43 @@
+---
+# tasks file for utility
+
+- name: Install htop
+  apt:
+    name: htop
+    state: present
+
+- name: Install wget
+  apt:
+    name: wget
+    state: present
+
+- name: Install curl
+  apt:
+    name: curl
+    state: present
+
+- name: Set a hostname dos nós
+  hostname:
+   name: "{{ hostname }}"
+  notify: #handlers
+    - addInHostsFile
+
+- name: Copiar arquivo 01-netcfg.yaml para os hosts
+  ansible.builtin.copy:
+      src: copia/
+      dest: /etc/netplan/
+      owner: vagrant
+      mode: '0644'
+
+- name: Altera IP
+  replace:
+      path: /etc/netplan/01-netcfg.yaml
+      regexp: 'IP_HOST'
+      replace: '{{ansible_host}}'
+  
+- name: Sudo ao usuario
+  replace:
+      path: /etc/sudoers
+      regexp: 'vagrant ALL=(ALL)'
+      replace: 'vagrant ALL=(ALL:ALL)'
+  become: true

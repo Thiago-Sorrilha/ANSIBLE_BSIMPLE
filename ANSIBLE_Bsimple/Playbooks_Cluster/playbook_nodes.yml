@@ -1,0 +1,8 @@
+---
+- hosts: nodes
+  become: true
+  gather_facts: no
+
+  roles:
+    - utility
+    - nodes

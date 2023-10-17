@@ -1,0 +1,12 @@
+---
+# vars file for nodes
+iptables: "net.bridge.bridge-nf-call-iptables  = 1"
+forward:  "net.ipv4.ip_forward                 = 1"
+ip6tables:  "net.bridge.bridge-nf-call-ip6tables = 1"
+over: "overlay"
+net: "br_netfilter"
+iface: "iface enp0s8 inet static"
+address:  "   address: {{ansible_host}}"
+gateway:  "   gateway: 192.168.56.0/24" # ajustar conforme range do IP
+netmask:  "   netmask: 255.255.255.0"
+xenial: "deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main | sudo tee /etc/apt/sources.list.d/kubernetes.list"

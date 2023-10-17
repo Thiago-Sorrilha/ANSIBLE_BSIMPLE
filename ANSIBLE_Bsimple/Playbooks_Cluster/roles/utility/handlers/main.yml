@@ -1,0 +1,17 @@
+---
+# handlers file for utility
+- name: addInHostsFile
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items: 
+    - "127.0.0.1 {{ hostname }}"
+    - "{{ansible_host}} {{ hostname }}" #inventory_hostname é o ip que esta no inventario
+
+- name: addI01-netcfg.yaml
+  lineinfile:
+    path: /etc/netplan/01-netcfg.yaml
+    line: "{{ item }}"
+    create: yes
+  with_items: 
+      - "{{ansible_host}}" #inventory_hostname é o ip que esta no inventario

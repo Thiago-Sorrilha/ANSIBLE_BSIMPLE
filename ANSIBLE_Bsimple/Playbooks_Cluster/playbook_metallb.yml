@@ -1,0 +1,29 @@
+- name: Instalação MetalLB
+  hosts: control_plane
+  become: true
+   
+
+  tasks: 
+  - name: 9) Copiar yamls MetalLB
+    ansible.builtin.copy:
+      src: copia/metallb/
+      dest: /home/vagrant/metallb/
+      owner: vagrant
+      mode: '0644'    
+  
+  - name: 10) Instalar MetalLB
+    shell: sudo kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+  
+  - name: Sleep for 100 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 100
+
+  - name: aplicar ipaddresspool
+    shell: sudo kubectl apply -f ./metallb/ipaddresspool.yaml
+    become: yes
+    ignore_errors: yes
+
+  - name: aplicar l2advertisement
+    shell: sudo kubectl apply -f ./metallb/l2advertisement.yaml 
+    become: yes
+    ignore_errors: yes

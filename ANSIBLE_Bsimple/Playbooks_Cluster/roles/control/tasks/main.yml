@@ -1,0 +1,44 @@
+---
+# tasks file for master
+- name: 1) Baixando o Calico.yaml
+  shell:             # comando que daria no terminal á no host
+    cmd: "wget https://docs.projectcalico.org/manifests/calico.yaml"
+
+- name: 2) Criando o Cluster com kubeadm
+  shell:             
+    cmd: "sudo kubeadm init --apiserver-advertise-address={{ansible_host}} --pod-network-cidr=192.168.56.100/16"
+    #cmd: "sudo kubeadm init --apiserver-advertise-address=192.168.56.101 --pod-network-cidr=192.168.56.100/16"
+    #cmd: "sudo kubeadm init" foi colocado o apiserver-advertise porque estava a dar erro nas VMs
+
+- name: 3) Configurar conta no Control Plane Node para ter acesso administrativo ao APIServer - step1
+  shell:             
+   cmd: "mkdir -p $HOME/.kube"
+
+- name: 4) Configurar conta no Control Plane - Step 2
+  shell:             
+    cmd: "sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+
+- name: 5) Configurar conta no Control Plane - Step 3
+  shell:             
+    cmd: "sudo chown $(id -u):$(id -g) $HOME/.kube/config"
+
+- name: 6) Criando Pod Network com o deployment yaml
+  shell:             
+    cmd: "kubectl apply -f calico.yaml"
+
+- name: 7) Instalar Docker
+  apt:
+    name: docker.io
+    state: present
+
+- name: 8) Instalar nginx
+  apt:
+    name: nginx
+    state: present
+
+#- name: 9) Copiar pasta da aplicação
+#  ansible.builtin.copy:
+#      src: copia/web_color/
+#      dest: /home/vagrant/aplicacao/
+#      owner: vagrant
+#      mode: '0644'    

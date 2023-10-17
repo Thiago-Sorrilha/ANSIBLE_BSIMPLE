@@ -1,0 +1,12 @@
+- name: Playbook de teste
+  hosts: all
+  become: true
+   
+  tasks: 
+  - name: Adicionar permissões sudo para o usuário vagrant
+    lineinfile:
+      path: /etc/sudoers
+      line: 'vagrant ALL=(ALL:ALL) ALL'
+      validate: 'visudo -cf %s'
+      state: present
+    become: yes  

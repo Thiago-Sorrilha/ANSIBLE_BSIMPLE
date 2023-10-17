@@ -1,0 +1,7 @@
+---
+- import_playbook: playbook_nodes.yml
+- import_playbook: playbook_control_plane.yml
+- import_playbook: playbook_join.yml
+- import_playbook: playbook_metallb.yml
+- import_playbook: playbook_argocd.yml
+- import_playbook: playbook_haproxy.yml

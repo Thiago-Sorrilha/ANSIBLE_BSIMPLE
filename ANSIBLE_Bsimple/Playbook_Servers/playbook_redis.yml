@@ -1,0 +1,29 @@
+---
+- name: Instalação REDIS
+  hosts: redis
+  become: true
+# tasks file for redis
+  tasks:
+  - name: install lsb-release gnupg
+    shell:
+      cmd: "apt install lsb-release gnupg"
+  
+  - name: download redis
+    shell:  
+      cmd: "curl -fsSL https://packages.redis.io/gpg -o- | gpg --dearmor > /usr/share/keyrings/redis-archive-keyring.gpg"
+      
+  - name: redis list
+    shell:
+      cmd: 'echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list'
+      
+  - name: apt update
+    shell:
+      cmd: "apt update"
+  
+  - name: install redis
+    shell:
+      cmd: "apt install -y redis"
+      
+  - name: enable redis
+    shell:
+      cmd: "systemctl enable redis-server.service"

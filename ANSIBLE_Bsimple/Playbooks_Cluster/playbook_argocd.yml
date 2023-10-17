@@ -1,0 +1,39 @@
+- name: Instalação ARGOCD
+  hosts: control_plane
+  become: true
+   
+  tasks: 
+  - name: Criando namespace 
+    shell:             
+      cmd: "kubectl create namespace argocd"
+    ignore_errors: yes  
+
+  - name: 1) Instalação ArgoCD
+    shell:             
+      cmd: "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.6.7/manifests/install.yaml"
+    #ignore_errors: yes
+
+  - name: Sleep for 60 seconds to PODs up
+    ansible.builtin.wait_for:
+      timeout: 60
+
+  - name: 2) Executar comando e capturar senha de Admin
+    shell:
+      cmd: "sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo"
+    register: command_output
+    become: yes
+    #ignore_errors: yes   Ignore erros de saída (caso o comando não encontre o recurso)
+
+  - name: 3) Exibir primeira senha de Admin
+    debug:
+      var: command_output.stdout
+    become: yes  
+
+  - name: 3.1) Salvar resultado em um arquivo local
+    ansible.builtin.copy:
+      content: "{{ command_output.stdout }}"
+      dest: "/home/vagrant/argocd.txt"
+
+
+  - name: 4) Alterar o tipo do serviço para LoadBalancer
+    command: "sudo kubectl patch svc argocd-server -n argocd -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'"
